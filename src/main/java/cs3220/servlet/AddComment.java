@@ -22,9 +22,12 @@ public class AddComment extends HttpServlet {
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		out.println("<html><head><title>Hello</title></head><body>");
-		out.println("<h2>add comment</h2>");
-		out.println("</body></html>");
+		out.println("<html><head><title>Add Comment</title></head><body>");
+		out.println("<h2>Add Comment</h2><form action=\"./AddComment\" method=\"GET\">");
+		out.println("<label>Name: </label><input type=\"text\" />");
+		out.println("<div style=\"width: 100%;\"><textarea rows=\"5\" style=\"width: 30em;resize: none;\"></textarea></div>");
+		out.println("<button>Add Comment</button>");
+		out.println("</form></body></html>");
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
