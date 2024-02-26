@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs3220.model.GuestBookEntry;
+
 @WebServlet("/AddComment")
 public class AddComment extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -22,6 +24,24 @@ public class AddComment extends HttpServlet {
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
+		
+		// do these params exist? form was submitted.  update entry
+		String name_param = request.getParameter("name");
+		String msg_param = request.getParameter("msg");
+		if (name_param != null && msg_param != null) {
+			
+			GuestBookEntry[] entries = (GuestBookEntry[])getServletContext().getAttribute("entries");
+			if (entries == null) {
+				out.println("GuestBook not loaded err");
+				return;
+			}
+			int newLen = entries.length + 1;
+			GuestBookEntry[] plusOne = new GuestBookEntry[newLen];
+			System.arraycopy(entries, 0, plusOne, 0, entries.length);
+			plusOne[newLen - 1] = new GuestBookEntry(name_param, msg_param);
+			getServletContext().setAttribute("entries", plusOne);
+			response.sendRedirect("/GuestBook/GuestBook");
+		}
 		out.println("<html><head><title>Add Comment</title></head><body>");
 		out.println("<h2>Add Comment</h2><form action=\"./AddComment\" method=\"GET\">");
 		out.println("<label>Name: </label><input name=\"name\" type=\"text\" />");
