@@ -22,8 +22,9 @@ public class EditEntry extends HttpServlet {
 	}
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {		
-		response.setContentType("text/html");
+		response.setContentType("text/html");		
 		PrintWriter out = response.getWriter();
+		
 		String id_param = request.getParameter("id");
 		if (id_param == null || id_param == "") {
 			out.println("empty err");
@@ -40,11 +41,22 @@ public class EditEntry extends HttpServlet {
 			out.println("DNE err");
 			return;
 		}
+		
+		// do these params exist? form was submitted.  update entry
+		String name_param = request.getParameter("name");
+		String msg_param = request.getParameter("msg");
+		if (name_param != null && msg_param != null) {
+			tar.name = name_param;
+			tar.msg = msg_param;
+			response.sendRedirect("/GuestBook/GuestBook");
+		}
+		
 		out.println("<html><head><title>Add Comment</title></head><body>");
-		out.println("<h2>Edit Comment</h2><form action=\"./AddComment\" method=\"GET\">");
+		out.println("<h2>Edit Comment</h2><form action=\"./EditEntry\" method=\"GET\">");
 		out.println("<label>Name: </label><input name=\"name\" type=\"text\" value=\"" + tar.name + "\" />");
 		out.println("<div style=\"width: 100%;\"><textarea name=\"msg\" rows=\"5\" style=\"width: 30em;resize: none;\">" + tar.msg + "</textarea></div>");
 		out.println("<button>Update Comment</button>");
+		out.println("<input type=\"hidden\" name=\"id\" value=\"" + tar.id + "\" />");
 		out.println("</form></body></html>");
 
 	}
