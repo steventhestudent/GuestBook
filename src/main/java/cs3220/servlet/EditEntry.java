@@ -36,7 +36,12 @@ public class EditEntry extends HttpServlet {
 			out.println("GuestBook not loaded err");
 			return;
 		}
-		GuestBookEntry tar = entries[id];
+		GuestBookEntry tar = null;for (GuestBookEntry cur : entries) {
+			if (cur.id == id) {
+				tar = cur;
+				break;
+			}
+		}
 		if (tar == null) {
 			out.println("DNE err");
 			return;
