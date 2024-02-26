@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs3220.model.GuestBookEntry;
+
 @WebServlet("/EditEntry")
 public class EditEntry extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -19,15 +21,32 @@ public class EditEntry extends HttpServlet {
 		
 	}
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+			throws ServletException, IOException {		
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		out.println("<html><head><title>Edit Comment</title></head><body>");
-		out.println("<h2>Edit Comment</h2><form action=\"./EditEntry\" method=\"GET\">");
-		out.println("<label>Name: </label><input type=\"text\" />");
-		out.println("<div style=\"width: 100%;\"><textarea rows=\"5\" style=\"width: 30em;resize: none;\"></textarea></div>");
+		String id_param = request.getParameter("id");
+		if (id_param == null || id_param == "") {
+			out.println("empty err");
+			return;
+		}
+		int id = Integer.parseInt(id_param);
+		GuestBookEntry[] entries = (GuestBookEntry[])getServletContext().getAttribute("entries");
+		if (entries == null) {
+			out.println("GuestBook not loaded err");
+			return;
+		}
+		GuestBookEntry tar = entries[id];
+		if (tar == null) {
+			out.println("DNE err");
+			return;
+		}
+		out.println("<html><head><title>Add Comment</title></head><body>");
+		out.println("<h2>Edit Comment</h2><form action=\"./AddComment\" method=\"GET\">");
+		out.println("<label>Name: </label><input name=\"name\" type=\"text\" value=\"" + tar.name + "\" />");
+		out.println("<div style=\"width: 100%;\"><textarea name=\"msg\" rows=\"5\" style=\"width: 30em;resize: none;\">" + tar.msg + "</textarea></div>");
 		out.println("<button>Update Comment</button>");
 		out.println("</form></body></html>");
+
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
