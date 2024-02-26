@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs3220.model.GuestBookEntry;
+
 @WebServlet("/DeleteEntry")
 public class DeleteEntry extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -22,9 +24,27 @@ public class DeleteEntry extends HttpServlet {
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		out.println("<html><head><title>Hello</title></head><body>");
-		out.println("<h2>delete entry</h2>");
-		out.println("</body></html>");
+		
+		String id_param = request.getParameter("id");
+		if (id_param == null || id_param == "") {
+			out.println("empty err");
+			return;
+		}
+		int id = Integer.parseInt(id_param);
+		GuestBookEntry[] entries = (GuestBookEntry[])getServletContext().getAttribute("entries");
+		if (entries == null) {
+			out.println("GuestBook not loaded err");
+			return;
+		}
+		
+		GuestBookEntry[] minusOne = new GuestBookEntry[entries.length - 1];
+		int i = 0;for (GuestBookEntry cur : entries) {
+			if (cur.id == id) continue;
+			minusOne[i] = cur;
+			i++;
+		}
+		getServletContext().setAttribute("entries", minusOne);
+		response.sendRedirect("/GuestBook/GuestBook");
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
